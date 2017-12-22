@@ -1,0 +1,19 @@
+{
+    "name": "mongomart",
+    "version": "0.1.0",
+    "description": "Ecommerce app Using the MongoDB driver and Express",
+    "main": "app.js",
+    "dependencies": {
+        "express": "~4.13.3",
+        "body-parser": "~1.15.0",
+        "mongodb": "~2.2.19",
+        "nunjucks": "~2.4.3",
+        "nunjucks-date": "~1.2.0"
+    },
+    "scripts": {
+        "start": "node mongomart.js",
+        "dev": "$env:MONGO_HOST=\"localhost\"; node mongomart.js"
+    },
+    "author": "Shannon Bradshaw",
+    "license": "0BSD"
+}

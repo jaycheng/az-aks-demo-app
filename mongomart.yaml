@@ -1,0 +1,73 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mongo
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:latest
+          ports: 
+            - containerPort: 27017
+          volumeMounts:
+            - name: azure-vol
+              mountPath: /data/db
+      volumes:
+        - name: azure-vol
+          persistentVolumeClaim:
+            claimName: dd-managed-hdd-1g
+          #azureDisk: 
+          #  diskName: {VHD-NAME}.vhd
+          #  diskURI: https://{AZURE-STORAGE-ACCOUNT}.blob.core.windows.net/{VHD-NAME}.vhd
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+spec: 
+  ports:
+  - port: 27017
+    targetPort: 27017
+  selector: 
+    app: mongo
+
+---
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mongomart-app
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: mongomart-app
+    spec:
+      containers:
+        - name: mongomart-app
+          image: jaycheng/mongomart
+          ports:
+            - containerPort: 3000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongomart-app
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+  selector:
+    app: mongomart-app
